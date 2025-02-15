@@ -1,0 +1,31 @@
+.filters {
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.option {
+    display: inline-block;
+    padding: 4px 16px;
+    background: white;
+    cursor: pointer;
+    font-weight: 500;
+    border: 1px solid #dd092f;
+    color: #dd092f;
+}
+
+.option:first-child {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.option:last-child {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.option.active {
+    background-color: #dd092f;
+    color: white;
+}

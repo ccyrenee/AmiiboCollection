@@ -1,0 +1,61 @@
+.heading {
+    margin-top: 20px;
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.tail {
+    font-size: 20px;
+    color: black;
+    line-height: 1;
+}
+
+.heading h1 {
+    font-weight: 600;
+    margin-bottom: 0;
+    color: #dd092f;
+}
+
+.gallery {
+    text-align: center;
+}
+
+.image {
+    max-width: 250px;
+    width: 100%;
+    margin: auto;
+}
+
+.info {
+    display: flex;
+    margin: 20px 0 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+    background: #eeeeee;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.series {
+    margin: 30px 0;
+    color: black;
+}
+
+.label {
+    font-size: 24px;
+    color: black;
+}
+
+.releases {
+    display: flex;
+    flex-direction: column;
+    max-width: 250px;
+    align-items: center;
+    margin: 20px auto;
+    color: black;
+}
+
+.link {
+    color: #dd092f;
+    font-weight: 400;
+}

@@ -1,0 +1,42 @@
+.footer {
+    background: #242424;
+    color: white;
+    padding: 20px;
+    margin: 0;
+}
+
+.logo {
+    max-width: 80px;
+    margin-left: 20px;
+}
+
+.line {
+    border-left: 1px solid #393939;
+    padding-left: 20px;
+    margin: 8px 0;
+}
+
+.link {
+    color: white;
+}
+
+.footerNav{
+    border-left: 1px solid #393939;
+    padding-left: 20px;
+}
+
+.footerNav a{
+    color: whitesmoke;
+    margin: 8px 0;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: none;
+    color: #dd092f;
+}
+
+.active{
+    color: #dd092f;
+}

@@ -1,0 +1,5 @@
+export const authConfig = {
+  domain: "dev-pve8xh78avyp18rn.us.auth0.com",
+  clientId: "H4qp5wis3Z5iPxX3yoNf9qA6tuUFsk97",
+  redirectUri: "http://localhost:5173/profile",
+}

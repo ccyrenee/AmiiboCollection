@@ -1,0 +1,14 @@
+.saveButton {
+    border: none;
+    background: white;
+    padding: 8px 8px;
+}
+
+.saveButton:hover {
+    background: #dd092f;
+}
+
+.img {
+    width: 24px;
+}
+
