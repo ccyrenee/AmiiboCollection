@@ -1,6 +1,5 @@
 import { NavLink } from "react-router-dom";
 import style from "./AmiiboTable.module.css";
-import { combineHeadTail } from "../../utility/utility";
 
 function AmiiboTable(props) {
     const { amiiboList } = props;

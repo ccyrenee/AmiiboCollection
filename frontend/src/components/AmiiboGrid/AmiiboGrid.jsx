@@ -1,5 +1,4 @@
 import AmiiboCard from "../AmiiboCard/AmiiboCard";
-import { combineHeadTail } from "../../utility/utility.jsx";
 
 function AmiiboGrid(props) {
     const { amiiboList, col } = props;

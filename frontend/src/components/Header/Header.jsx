@@ -10,7 +10,7 @@ const Header = ({ logo, navItems }) => {
     const toggle = () => setIsOpen(!isOpen);
 
     return (
-        <Navbar expand="md">
+        <Navbar expand="md" className={style.navBar}>
             <NavLink to="/">
                 <img className={style.logo} src={logo} alt="Logo" />
             </NavLink>
