@@ -11,21 +11,9 @@ dotenv.config();
 const app = express();
 const port = 3000;
 
-// Verifica che la variabile di ambiente sia letta correttamente
-console.log('Auth0 Domain:', process.env.AUTH0_DOMAIN);
-if (!process.env.AUTH0_DOMAIN) {
-    throw new Error('AUTH0_DOMAIN is not defined!');
-}
-
 // Middleware
-app.use(cors({
-    origin: 'http://localhost:5173',  // Permetti solo il dominio specificato
-    methods: ['GET', 'POST', 'DELETE'], // Le metodologie consentite
-    credentials: true  // Consenti l'invio di credenziali (come i cookies)
-}));
-
-app.options('*', cors());
-app.use(bodyParser.json()); // Per parse i dati JSON nelle richieste
+app.use(cors());
+app.use(bodyParser.json());
 
 // Connessione a MongoDB
 mongoose.connect(process.env.MONGO_URI)

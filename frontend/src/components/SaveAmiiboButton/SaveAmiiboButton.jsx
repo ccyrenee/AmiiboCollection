@@ -11,7 +11,6 @@ const SaveAmiiboButton = ({ tail, name, image }) => {
     const [isSaved, setIsSaved] = useState(false);
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
 
     // useEffect per verificare se l'amiibo è già salvato
     useEffect(() => {
@@ -29,7 +28,6 @@ const SaveAmiiboButton = ({ tail, name, image }) => {
                 setIsSaved(savedAmiibos.some(a => a.tail === tail));
             } catch (error) {
                 console.error("Error checking saved amiibos:", error);  // Log per errore
-                setErrorMessage(`Failed to check saved Amiibos: ${error.message}`);
             } finally {
                 setLoading(false);
             }
@@ -46,7 +44,6 @@ const SaveAmiiboButton = ({ tail, name, image }) => {
         }
 
         setLoading(true);
-        setErrorMessage(""); // Reset dell'errore prima di una nuova operazione
         try {
             // Recupera il token
             const token = await getAccessTokenSilently({ audience: "https://amiibo-api" });
@@ -77,7 +74,6 @@ const SaveAmiiboButton = ({ tail, name, image }) => {
             }
         } catch (error) {
             console.error("Error in saving/removing amiibo", error);  // Log per errore
-            setErrorMessage("An error occurred while saving/removing the Amiibo. Please try again.");
         } finally {
             setLoading(false);
         }
@@ -102,7 +98,6 @@ const SaveAmiiboButton = ({ tail, name, image }) => {
                 />
             </button>
             {loading && <div className={style.loading}>Saving...</div>}
-            {errorMessage && <div className={style.error}>{errorMessage}</div>}
 
             <Modal isOpen={showModal} toggle={() => setShowModal(false)}>
                 <ModalHeader toggle={() => setShowModal(false)}>Authentication Required</ModalHeader>

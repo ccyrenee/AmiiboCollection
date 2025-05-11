@@ -7,7 +7,7 @@ const { authMiddleware } = require('../middlewares/authMiddleware');
 router.use(authMiddleware); // applica una sola volta
 
 // routes/userRoutes.js
-router.get("/profile/collection", authMiddleware, getSavedAmiibos);
+router.get("/profile/collection", getSavedAmiibos);
 router.post("/profile/collection", saveAmiibo);
 router.delete("/profile/collection", removeAmiibo);
 
