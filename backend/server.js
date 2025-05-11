@@ -12,8 +12,14 @@ const app = express();
 const port = 3000;
 
 // Middleware
-app.use(cors());
-app.use(bodyParser.json());
+app.use(cors({
+    origin: 'http://localhost:5173',  // Permetti solo il dominio specificato
+    methods: ['GET', 'POST', 'DELETE'], // Le metodologie consentite
+    credentials: true  // Consenti l'invio di credenziali (come i cookies)
+}));
+
+app.options('*', cors());
+app.use(bodyParser.json()); // Per parse i dati JSON nelle richieste
 
 // Connessione a MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -22,7 +28,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Usa le rotte importate
 app.use('/', amiiboRoutes);
-app.use('/profile', userRoutes);
+app.use('/', userRoutes);
 
 // Avvio del server
 app.listen(port, () => {

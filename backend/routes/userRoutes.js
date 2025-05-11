@@ -1,14 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { getSavedAmiibos, saveAmiibo, removeAmiibo } = require("../controllers/userController");
-const { authMiddleware } = require('../middlewares/authMiddleware');
+const authMiddleware = require("../middlewares/authMiddleware.js");
+const { authenticateUser, getSavedAmiibos, saveAmiibo, removeAmiibo } = require("../controllers/userController.js");
 
-// Middleware di autenticazione
-router.use(authMiddleware); // applica una sola volta
-
-// routes/userRoutes.js
-router.get("/profile/collection", getSavedAmiibos);
-router.post("/profile/collection", saveAmiibo);
-router.delete("/profile/collection", removeAmiibo);
+router.get('/profile/collection', authMiddleware, authenticateUser, getSavedAmiibos);
+router.post('/profile/collection/:tail', authMiddleware, authenticateUser, saveAmiibo);
+router.delete('/profile/collection/:tail', authMiddleware, authenticateUser, removeAmiibo);
 
 module.exports = router;

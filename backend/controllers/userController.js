@@ -2,15 +2,17 @@ const User = require('../models/userModel');
 
 // Middleware di autenticazione
 const authenticateUser = async (req, res, next) => {
-    console.log('Authorization header:', req.headers.authorization);  // Debug
+    console.log('Authorization header:', req.headers.authorization);  // Aggiungi questo log
     const { auth0Id } = req.user;  // auth0Id dovrebbe essere già estratto dal token JWT
 
     try {
+        // Verifica se l'utente esiste già nel database
         let user = await User.findOne({ auth0Id });
+
         if (!user) {
             user = new User({
                 auth0Id: auth0Id,
-                savedAmiibos: []
+                savedAmiibos: []  // Inizializza savedAmiibos come array vuoto
             });
 
             await user.save();
@@ -18,7 +20,6 @@ const authenticateUser = async (req, res, next) => {
         }
 
         req.user = user;  // Attacca l'utente alla richiesta
-        console.log("User attached to request:", req.user); // Debug per vedere l'utente
         next();  // Passa al prossimo middleware
     } catch (error) {
         console.error("Error authenticating user:", error);
@@ -26,68 +27,64 @@ const authenticateUser = async (req, res, next) => {
     }
 };
 
-// Recupera gli amiibo salvati dell'utente autenticato
-// controllers/userController.js
+// Retrieve saved amiibos for the authenticated user
 const getSavedAmiibos = async (req, res) => {
+    const { auth0Id } = req.user;  // auth0Id è disponibile dopo il middleware di autenticazione
     try {
-        console.log("Fetching saved Amiibos for user:", req.user.auth0Id); // Log dell'utente
-        const user = await User.findOne({ auth0Id: req.user.auth0Id });
+        const user = await User.findOne({ auth0Id });
+
         if (!user) {
-            return res.status(404).json({ message: "User not found" });
+            return res.status(404).json({ message: 'User not found' });
         }
-        res.json(user.savedAmiibos);
+
+        console.log("User found:", user); // Log per vedere i dati dell'utente
+        res.status(200).json({ savedAmiibos: user.savedAmiibos || [] });
     } catch (error) {
-        console.error("❌ Errore durante il recupero degli Amiibo salvati:", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        console.error("Error retrieving saved amiibos:", error);
+        res.status(500).json({ error: 'Error in fetching saved amiibos' });
     }
 };
 
-
-// Salva un amiibo per l'utente autenticato
+// Save an amiibo for the authenticated user
 const saveAmiibo = async (req, res) => {
     try {
-        const { tail, name, image } = req.body;
-        const user = await User.findOne({ auth0Id: req.user.auth0Id });  // Usa req.user per accedere al auth0Id
+        console.log("Received request to save Amiibo", req.body); // Aggiungi log per debug
+        const userId = req.user.sub;
+        const tail = req.params.tail;
 
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
-        }
+        // La logica di salvataggio dell'amiibo
+        const savedAmiibo = await User.updateOne(
+            { _id: userId },
+            { $addToSet: { savedAmiibos: { tail } } }  // Esegui l'aggiornamento del documento
+        );
 
-        const amiiboExists = user.savedAmiibos.some(a => a.tail === tail);
-        if (amiiboExists) {
-            return res.status(400).send({ message: 'Amiibo already saved' });
-        }
-
-        user.savedAmiibos.push({ tail, name, image });
-        await user.save();
-        res.status(200).send({ message: 'Amiibo saved successfully' });
+        res.status(200).json(savedAmiibo);
     } catch (error) {
-        console.error("Error saving amiibo:", error);  // Log per errore
-        res.status(500).send({ message: "Error saving amiibo" });
+        console.error("Error while saving amiibo:", error);  // Log dell'errore
+        res.status(500).json({ error: "An error occurred while saving the Amiibo" });
     }
 };
 
-// Rimuove un amiibo dalla collezione dell'utente autenticato
+// Remove an amiibo from the user's collection
 const removeAmiibo = async (req, res) => {
+    const { auth0Id } = req.user;  // auth0Id è disponibile dopo il middleware di autenticazione
+    const { tail } = req.params;
+
     try {
-        const { tail } = req.params;
-        const user = await User.findOne({ auth0Id: req.user.auth0Id });  // Usa req.user per accedere al auth0Id
+        const user = await User.findOne({ auth0Id });
 
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
+        if (!user || !user.savedAmiibos.some(a => a.tail === tail)) {
+            return res.status(404).json({ message: 'Amiibo not found' });
         }
 
-        const amiiboIndex = user.savedAmiibos.findIndex(a => a.tail === tail);
-        if (amiiboIndex === -1) {
-            return res.status(400).send({ message: 'Amiibo not found in collection' });
-        }
-
-        user.savedAmiibos.splice(amiiboIndex, 1);
+        // Remove the amiibo from the collection
+        user.savedAmiibos = user.savedAmiibos.filter(a => a.tail !== tail);
         await user.save();
-        res.status(200).send({ message: 'Amiibo removed successfully' });
+
+        res.status(200).json(user.savedAmiibos);  // Return the updated list of saved amiibos
     } catch (error) {
-        console.error("Error removing amiibo:", error);  // Log per errore
-        res.status(500).send({ message: "Error removing amiibo" });
+        console.error("Error removing amiibo:", error);
+        res.status(500).json({ error: 'Error in removing amiibo' });
     }
 };
 
