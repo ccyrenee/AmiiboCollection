@@ -34,7 +34,7 @@
     color: #dd092f;
 }
 
-button {
+.authButton {
     font-size: 14px;
     padding: 5px 15px;
     border: none;
@@ -42,7 +42,7 @@ button {
     transition: background 0.3s ease;
 }
 
-button:hover {
+.authButton:hover {
     background: #dd092f;
     color: white;
 }

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { NavLink } from "react-router-dom";
 import { Collapse, Nav, Navbar, NavbarToggler, NavItem } from 'reactstrap';
+import LoginButton from '../../components/LoginButton/LoginButton.jsx';
+import LogoutButton from '../../components/LogoutButton/LogoutButton.jsx';
 import { useAuth0 } from "@auth0/auth0-react";
 import style from "./Header.module.css";
 
@@ -30,9 +32,9 @@ const Header = ({ logo, navItems }) => {
                         </NavItem>
                     )}
                 </Nav>
-                <button onClick={() => isAuthenticated ? logout({ returnTo: window.location.origin }) : loginWithRedirect()}>
-                    {isAuthenticated ? "Logout" : "Login / Sign In"}
-                </button>
+                <div className={style.authButton}>
+                    {isAuthenticated ? <LogoutButton/> : <LoginButton/>}
+                </div>
             </Collapse>
         </Navbar>
     );

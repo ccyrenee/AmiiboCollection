@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }) => {
     }, [isAuthenticated, isLoading, loginWithRedirect]);
 
     if (isLoading) {
-        return <div>Loading...</div>;
+        return <div>Checking authentication...</div>;
     }
 
     return isAuthenticated ? children : null;

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const amiiboController = require("../controllers/amiiboController.jsx");
+const amiiboController = require("../controllers/amiiboController.js");
 
 // Rotta per la home page
 router.get('/', async (req, res) => {

@@ -1,6 +1,5 @@
 import Header from '../Header/Header.jsx';
 import Footer from '../Footer/Footer.jsx';
-import { Auth0Provider } from "@auth0/auth0-react";
 
 function MainTemplate(props) {
     const { children, footerCourseName, footerCourseLink, navItems, logo } = props;

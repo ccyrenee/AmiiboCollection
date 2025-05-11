@@ -30,7 +30,11 @@ function App() {
                     <Route path="/collection/:amiiboSeries" element={<AmiiboCollection />} />
                     <Route path="/collection" element={<AmiiboCollection />}/>
                     <Route path="/info" element={<Info />}/>
-                    <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+                    <Route path="/profile" element={
+                            <ProtectedRoute>
+                                <Profile />
+                            </ProtectedRoute>
+                    } />
                 </Routes>
             </MainTemplate>
         </BrowserRouter>
