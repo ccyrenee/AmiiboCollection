@@ -4,6 +4,16 @@ body {
   font-family: "Montserrat", sans-serif;
 }
 
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+main {
+  flex: 1;
+}
+
 img {
   max-width: 100%;
 }
@@ -14,9 +24,6 @@ a {
 
 p {
   color: #393939;
-  padding-top: 20px;
-  margin-right: 20px;
-  margin-left: 20px;
 }
 
 .row {
@@ -26,16 +33,31 @@ p {
 .button {
   border: 2px solid #dd092f;
   color: #dd092f;
+  background-color: white;
+  border-radius: 8px;
+  padding: 4px 12px;
   text-transform: uppercase;
-  padding: 6px 16px;
   font-weight: 600;
-  border-radius: 6px;
-  margin-top: 8px;
 }
 
 .button:hover {
+  background-color: #dd092f;
   color: white;
-  background: #dd092f;
+}
+
+.exploreButton {
+  border: 2px solid #dd092f;
+  color: #dd092f;
+  background-color: white;
+  border-radius: 8px;
+  padding: 8px 16px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.exploreButton:hover {
+  background-color: #dd092f;
+  color: white;
 }
 
 h1 {
@@ -53,4 +75,34 @@ h2{
   text-align: left;
   padding-bottom: 10px;
   color: #dd092f;
+}
+
+.spinnerContainer {
+  display: flex;
+  justifyContent: center;
+  alignItems: center;
+  height: 200px;
+}
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #dd092f;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.noResultsContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 60px;
+  text-align: center;
 }

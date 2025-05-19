@@ -5,14 +5,14 @@ function MainTemplate(props) {
     const { children, footerCourseName, footerCourseLink, navItems, logo } = props;
 
     return (
-        <div>
+        <div className="layout">
             <Header logo={logo} navItems={navItems} />
-            <div className="my-5">
+            <main className="my-5">
                 {children}
-            </div>
+            </main>
             <Footer courseName={footerCourseName} courseLink={footerCourseLink} navItems={navItems} />
         </div>
     );
-}
+};
 
 export default MainTemplate;

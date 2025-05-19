@@ -1,16 +1,31 @@
 .filters {
     margin-top: 40px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+}
+
+.filtersLeft {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
+    align-items: center;
+}
+
+.filtersRight {
+    display: flex;
+    align-items: center;
 }
 
 .series select {
-    padding: 4px 12px;
+    padding: 5.6px 12px;
     height: 100%;
     border: 1px solid #dd092f;
     color: #dd092f;
-    background: white;
+    background-color: white;
     border-radius: 6px;
     cursor: pointer;
     box-sizing: border-box;
@@ -19,7 +34,6 @@
 .series select:focus {
     outline: none;
 }
-
 
 .mode {
     display: flex;
@@ -49,4 +63,29 @@
 .option.active {
     background-color: #dd092f;
     color: white;
+}
+
+.paginationContainer {
+    text-align: center;
+    margin-top: 24px;
+}
+
+.paginationControls {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.paginationText {
+    color: #393939;
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.noResultsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 90px;
+    text-align: center;
 }

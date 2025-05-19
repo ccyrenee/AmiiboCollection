@@ -9,7 +9,7 @@ createRoot(document.getElementById('root')).render(
         domain="dev-pve8xh78avyp18rn.us.auth0.com"
         clientId="H4qp5wis3Z5iPxX3yoNf9qA6tuUFsk97"
         authorizationParams={{
-            redirect_uri: window.location.origin,
+            redirect_uri: window.location.origin + "/profile",
             audience: "https://amiibo-api",
         }}
     >

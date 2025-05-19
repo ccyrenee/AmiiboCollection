@@ -1,96 +1,72 @@
+const axios = require("axios");
 const User = require('../models/userModel');
 
-// Middleware di autenticazione
-const authenticateUser = async (req, res, next) => {
-    console.log('Authorization header:', req.headers.authorization);  // Aggiungi questo log
-    const { auth0Id } = req.user;  // auth0Id dovrebbe essere già estratto dal token JWT
-
-    try {
-        // Verifica se l'utente esiste già nel database
-        let user = await User.findOne({ auth0Id });
-
-        if (!user) {
-            user = new User({
-                auth0Id: auth0Id,
-                savedAmiibos: []  // Inizializza savedAmiibos come array vuoto
-            });
-
-            await user.save();
-            console.log(`New user created: ${auth0Id}`);
-        }
-
-        req.user = user;  // Attacca l'utente alla richiesta
-        next();  // Passa al prossimo middleware
-    } catch (error) {
-        console.error("Error authenticating user:", error);
-        res.status(500).json({ message: "Error authenticating user." });
-    }
-};
-
-// Retrieve saved amiibos for the authenticated user
+// Recupera gli amiibo salvati (tail) per l'utente autenticato
 const getSavedAmiibos = async (req, res) => {
-    const { auth0Id } = req.user;  // auth0Id è disponibile dopo il middleware di autenticazione
+    const { auth0Id } = req.user;
     try {
-        const user = await User.findOne({ auth0Id });
-
+        let user = await User.findOne({ auth0Id });
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            user = new User({ auth0Id, savedAmiibos: [] });
+            await user.save();
         }
-
-        console.log("User found:", user); // Log per vedere i dati dell'utente
-        res.status(200).json({ savedAmiibos: user.savedAmiibos || [] });
+        console.log("Tails", user.savedAmiibos);
+        return res.status(200).json({ savedAmiibos: user.savedAmiibos });
     } catch (error) {
-        console.error("Error retrieving saved amiibos:", error);
-        res.status(500).json({ error: 'Error in fetching saved amiibos' });
+        console.error("Error fetching saved tails:", error);
+        return res.status(500).json({ error: 'Error fetching saved tails' });
     }
 };
 
-// Save an amiibo for the authenticated user
+
+// Salva un amiibo (tail) nella lista salvata
 const saveAmiibo = async (req, res) => {
+    const { auth0Id } = req.user;
+    let { tail } = req.body;
+    if (!tail) {
+        return res.status(400).json({ error: 'Missing amiibo tail' });
+    }
+    tail = String(tail);
     try {
-        console.log("Received request to save Amiibo", req.body); // Aggiungi log per debug
-        const userId = req.user.sub;
-        const tail = req.params.tail;
-
-        // La logica di salvataggio dell'amiibo
-        const savedAmiibo = await User.updateOne(
-            { _id: userId },
-            { $addToSet: { savedAmiibos: { tail } } }  // Esegui l'aggiornamento del documento
-        );
-
-        res.status(200).json(savedAmiibo);
+        let user = await User.findOne({ auth0Id });
+        if (!user) {
+            user = new User({ auth0Id, savedAmiibos: [tail] });
+            await user.save();
+            return res.status(201).json({ savedAmiibos: user.savedAmiibos });
+        }
+        if (!user.savedAmiibos.includes(tail)) {
+            user.savedAmiibos.push(tail);
+            await user.save();
+        }
+        console.log("Tail saved: ", user.savedAmiibos);
+        res.status(200).json({ savedAmiibos: user.savedAmiibos });
     } catch (error) {
-        console.error("Error while saving amiibo:", error);  // Log dell'errore
-        res.status(500).json({ error: "An error occurred while saving the Amiibo" });
+        console.error("Error saving amiibo's tail:", error);
+        res.status(500).json({ error: 'Error saving amiibo' });
     }
 };
 
-// Remove an amiibo from the user's collection
+// Rimuove un amiibo (tail) dalla lista salvata
 const removeAmiibo = async (req, res) => {
-    const { auth0Id } = req.user;  // auth0Id è disponibile dopo il middleware di autenticazione
+    const { auth0Id } = req.user;
     const { tail } = req.params;
-
     try {
         const user = await User.findOne({ auth0Id });
-
-        if (!user || !user.savedAmiibos.some(a => a.tail === tail)) {
-            return res.status(404).json({ message: 'Amiibo not found' });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
         }
-
-        // Remove the amiibo from the collection
-        user.savedAmiibos = user.savedAmiibos.filter(a => a.tail !== tail);
+        user.savedAmiibos = user.savedAmiibos.filter(t => t !== String(tail));
         await user.save();
-
-        res.status(200).json(user.savedAmiibos);  // Return the updated list of saved amiibos
+        console.log("Tail removed: ", user.savedAmiibos);
+        res.status(200).json({ message: "Amiibo removed successfully" });
     } catch (error) {
-        console.error("Error removing amiibo:", error);
-        res.status(500).json({ error: 'Error in removing amiibo' });
+        console.log("Error removing amiibo's tail:", error);
+        res.status(500).json({ message: "Internal Server Error" });
     }
 };
 
 module.exports = {
-    authenticateUser,
     getSavedAmiibos,
     saveAmiibo,
-    removeAmiibo
+    removeAmiibo,
 };

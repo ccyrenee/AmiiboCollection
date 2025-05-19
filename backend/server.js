@@ -1,24 +1,23 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const dotenv = require('dotenv');
 const amiiboRoutes = require('./routes/amiiboRoutes.js');
 const userRoutes = require('./routes/userRoutes.js');
-
-dotenv.config();
 
 const app = express();
 const port = 3000;
 
 // Middleware
 app.use(cors({
-    origin: 'http://localhost:5173',  // Permetti solo il dominio specificato
-    methods: ['GET', 'POST', 'DELETE'], // Le metodologie consentite
-    credentials: true  // Consenti l'invio di credenziali (come i cookies)
+    origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'DELETE'],
+    credentials: true  // Per consentire l'invio di credenziali (come i cookies)
 }));
 
-app.options('*', cors());
 app.use(bodyParser.json()); // Per parse i dati JSON nelle richieste
 
 // Connessione a MongoDB
@@ -28,7 +27,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Usa le rotte importate
 app.use('/', amiiboRoutes);
-app.use('/', userRoutes);
+app.use('/profile', userRoutes);
 
 // Avvio del server
 app.listen(port, () => {

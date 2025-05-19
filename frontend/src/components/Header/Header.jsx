@@ -6,7 +6,8 @@ import LogoutButton from '../../components/LogoutButton/LogoutButton.jsx';
 import { useAuth0 } from "@auth0/auth0-react";
 import style from "./Header.module.css";
 
-const Header = ({ logo, navItems }) => {
+function Header(props) {
+    const { logo, navItems } = props;
     const { loginWithRedirect, logout, isAuthenticated } = useAuth0();
     const [isOpen, setIsOpen] = useState(false);
     const toggle = () => setIsOpen(!isOpen);
@@ -32,7 +33,7 @@ const Header = ({ logo, navItems }) => {
                         </NavItem>
                     )}
                 </Nav>
-                <div className={style.authButton}>
+                <div>
                     {isAuthenticated ? <LogoutButton/> : <LoginButton/>}
                 </div>
             </Collapse>

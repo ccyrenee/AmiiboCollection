@@ -4,11 +4,28 @@
     padding: 8px 8px;
 }
 
-.saveButton:hover {
-    background: #dd092f;
-}
-
 .img {
     width: 24px;
 }
 
+.modalHeader {
+    background-color: white;
+    color: #dd092f;
+    border-bottom: 2px solid #dd092f;
+}
+
+.modalHeader .btn-close {
+    filter: invert(1);
+    opacity: 1;
+}
+
+.modalButton {
+    background-color: #dd092f;
+    border-color: #dd092f;
+    color: white;
+}
+
+.modalButton:hover {
+    background-color: #b50726;
+    border-color: #b50726;
+}

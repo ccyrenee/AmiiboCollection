@@ -1,12 +1,9 @@
 {
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.3.4",
-    "concurrently": "^9.1.2",
-    "vite": "^6.2.1",
-    "wait-on": "^8.0.3"
+    "concurrently": "^9.1.2"
   },
   "scripts": {
-    "start": "npm run server & wait-on http://localhost:3000 && npm run client",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd backend && node server.js",
     "client": "cd frontend && npm run dev"
   },

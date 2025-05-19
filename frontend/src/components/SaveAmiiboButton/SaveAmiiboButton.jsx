@@ -1,43 +1,18 @@
-import { useState, useEffect } from "react";
-import { Modal, ModalHeader, ModalBody, Button } from "reactstrap";
 import { useAuth0 } from "@auth0/auth0-react";
-import unsavedIcon from "../../assets/images/unsaved.png";
-import savedIcon from "../../assets/images/saved.png";
-import style from "./SaveAmiiboButton.module.css";
+import { useState } from "react";
 import axios from "axios";
+import savedIcon from "../../assets/images/saved.png";
+import unsavedIcon from "../../assets/images/unsaved.png";
+import style from "./SaveAmiiboButton.module.css";
+import { Modal, ModalHeader, ModalBody, Button } from "reactstrap";
 
-const SaveAmiiboButton = ({ tail, name, image }) => {
-    const { loginWithRedirect, isAuthenticated, getAccessTokenSilently } = useAuth0();
-    const [isSaved, setIsSaved] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+function SaveAmiiboButton(props) {
+    const { tail, isSaved, onSave, onUnsave } = props;
+    const { getAccessTokenSilently, isAuthenticated, loginWithRedirect } = useAuth0();
     const [loading, setLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
 
-    // useEffect per verificare se l'amiibo è già salvato
-    useEffect(() => {
-        const checkIfSaved = async () => {
-            if (!isAuthenticated) return;
-
-            setLoading(true);
-            try {
-                const token = await getAccessTokenSilently({ audience: "https://amiibo-api" });
-                const response = await axios.get('http://localhost:3000/profile/collection', {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                const savedAmiibos = response?.data?.savedAmiibos || [];
-                setIsSaved(savedAmiibos.some(a => a.tail === tail));
-            } catch (error) {
-                console.error("Error checking saved amiibos:", error);  // Log per errore
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        checkIfSaved();
-    }, [isAuthenticated, getAccessTokenSilently, tail]);
-
-    // Funzione per gestire il salvataggio/rimozione dell'amiibo
-    const handleSave = async () => {
+    const handleClick = async () => {
         if (!isAuthenticated) {
             setShowModal(true);
             return;
@@ -45,65 +20,51 @@ const SaveAmiiboButton = ({ tail, name, image }) => {
 
         setLoading(true);
         try {
-            // Recupera il token
             const token = await getAccessTokenSilently({ audience: "https://amiibo-api" });
-
-            if (!token) {
-                throw new Error("No token received");
-            }
-
-            const method = isSaved ? "DELETE" : "POST";
-
-            // Invia la richiesta con l'intestazione di autorizzazione
-            const response = await axios({
-                method,
-                url: `http://localhost:3000/profile/collection/${tail}`,
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-                data: {
-                    tail,
-                    name, // recuperato da props
-                    image // recuperato da props
+            if (isSaved) {
+                //Se salvato allora rimuove amiibo dal backend
+                await axios.delete(`http://localhost:3000/profile/collection/${tail}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                onUnsave?.(tail);
+            } else {
+                //Se non è savalto allora aggiunge amiibo nel backend
+                const res = await axios.post(
+                    "http://localhost:3000/profile/collection",
+                    { tail },
+                    { headers: { Authorization: `Bearer ${token}` } }
+                );
+                //Se risposta contiene il tail, chiama onSave
+                if (res.data?.savedAmiibos?.includes(tail)) {
+                    onSave?.(tail);
                 }
-            });
-
-
-            if (response.status === 200) {
-                setIsSaved(!isSaved);  // Cambia lo stato di salvataggio
             }
         } catch (error) {
-            console.error("Error in saving/removing amiibo", error);  // Log per errore
+            console.error("Error saving or removing an amiibo", error);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleLogin = () => {
-        loginWithRedirect();
-        setShowModal(false);
-    };
-
     return (
         <>
-            <button
-                className={style.saveButton}
-                onClick={handleSave}
-                disabled={loading}
-            >
+            <button onClick={handleClick} disabled={loading} className={style.saveButton}>
                 <img
                     src={isSaved ? savedIcon : unsavedIcon}
                     alt={isSaved ? "Amiibo saved" : "Amiibo unsaved"}
                     className={style.img}
                 />
             </button>
-            {loading && <div className={style.loading}>Saving...</div>}
 
             <Modal isOpen={showModal} toggle={() => setShowModal(false)}>
-                <ModalHeader toggle={() => setShowModal(false)}>Authentication Required</ModalHeader>
+                <ModalHeader toggle={() => setShowModal(false)} className={style.modalHeader}>
+                    Authentication Required
+                </ModalHeader>
                 <ModalBody>
                     <p>To save an Amiibo to your collection, you must log in.</p>
-                    <Button onClick={handleLogin}>Login or Sign up</Button>
+                    <Button onClick={loginWithRedirect} className={style.modalButton}>
+                        Login or Sign up
+                    </Button>
                 </ModalBody>
             </Modal>
         </>

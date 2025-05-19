@@ -4,7 +4,7 @@ import disco from "../../assets/images/disco.png";
 import unimib from "../../assets/images/unimib.png";
 
 function Footer(props) {
-    const {courseName, courseLink, navItems} = props;
+    const { courseName, courseLink, navItems } = props;
     const itemList = navItems.map((item) => {
         return (
             <li key={item.link} className="nav-item">
@@ -48,7 +48,7 @@ function Footer(props) {
                 <div>&copy; 2025 Amiibo Collection. All rights reserved.</div>
             </div>
         </footer>
-    )
-}
+    );
+};
 
 export default Footer;
